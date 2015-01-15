@@ -2,9 +2,9 @@ import os.path
 import struct
 # from PIL import Image 
 import PIL.Image
-import ImageTk
-import ImageEnhance
-import ImageFilter
+import PIL.ImageTk
+import PIL.ImageEnhance
+import PIL.ImageFilter
 import sys
 
 im = None ### avoid "NameError: global name 'im' is not defined" error
@@ -66,9 +66,9 @@ def towif(im, outfn):
 def myEqualize(im, contrast=1, brightness=1):
     if im is not None:
         im = im.convert('L')
-        contr = ImageEnhance.Contrast(im)
+        contr = PIL.ImageEnhance.Contrast(im)
         im = contr.enhance(contrast)
-        bright = ImageEnhance.Brightness(im)
+        bright = PIL.ImageEnhance.Brightness(im)
         im = bright.enhance(brightness)
         #im.show()
     return im
@@ -80,8 +80,13 @@ def curry(func, *args, **kw):
 
 ## set canvas size dynamically
 SIZES = {'SMALL':(128, 96),
+	 'shm':(154,69),
          'MEDIUM':(200, 96),
-         'LARGE':(264, 176)}
+         'LARGE':(264, 176),
+         'TKT':(176, 176),
+	 '75px sq':(128, 128),
+	 'nova':(128,45),
+}
 
 def setWH(w, h):
     global W, H, im
@@ -108,6 +113,10 @@ sizeMenu = Menu(menubar)
 sizeMenu.add_command(label="Small", command=curry(setWH, *SIZES['SMALL']))
 sizeMenu.add_command(label="Medium", command=curry(setWH, *SIZES['MEDIUM']))
 sizeMenu.add_command(label="Large", command=curry(setWH, *SIZES['LARGE']))
+sizeMenu.add_command(label="Ticket", command=curry(setWH, *SIZES['TKT']))
+sizeMenu.add_command(label="75pxsq",command=curry(setWH, *SIZES['75px sq']))
+sizeMenu.add_command(label="nova", command=curry(setWH, *SIZES['nova']))
+sizeMenu.add_command(label="shm", command=curry(setWH, *SIZES['shm']))
 menubar.add_cascade(label="Size", menu=sizeMenu)
 
 ### canvas
@@ -119,7 +128,7 @@ def resize_im():
     im = PIL.Image.open(FILENAME)
 
     im = im.resize((W, H))
-    imtk = ImageTk.PhotoImage(im)
+    imtk = PIL.ImageTk.PhotoImage(im)
     canvas.create_image([W/2, H/2], image=imtk)
     try:
         image_update()
@@ -153,7 +162,7 @@ def image_update():
         wif= wif.convert('1') # convert image to black and white
         if wiftk_id is not None:
             canvas.delete(wiftk_id)
-        wiftk = ImageTk.PhotoImage(wif)
+        wiftk = PIL.ImageTk.PhotoImage(wif)
         wiftk_id = canvas.create_image([W/2, H + H/2 + 10], image=wiftk)
 
 canvas.pack()
@@ -181,7 +190,7 @@ def main():
 if False:    
     image_file = Image.open(fn) # open colour image
     image_file= image_file.convert('L') # convert image to monochrome - this works
-    import ImageEnhance
+    import PIL.ImageEnhance
 
     image_file = myEqualize(image_file)
     image_file= image_file.convert('1') # convert image to black and white

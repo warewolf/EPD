@@ -1,0 +1,6 @@
+Notable Vegas Events:
+  Aug 5 to 6: 2 Day Wireless Class
+  Aug 7: DC101 - RF Pentesting Talk
+  Aug 8 to 10: Wireless Village CTF
+
+  Aug XX: Post-exploitation 2.0 Talk
